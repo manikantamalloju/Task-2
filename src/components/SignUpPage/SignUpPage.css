@@ -1,6 +1,6 @@
 .SignUp {
   height: 100vh;
-
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -10,10 +10,22 @@
 .login-container {
   background-color: #fff;
   padding: 40px;
-  width: 20%;
+  width: 70%;
   box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.2);
   border-radius: 10px;
   animation: slide-up 1s;
+}
+
+/* Large screens */
+@media (min-width: 769px) {
+  .login-container {
+    background-color: #fff;
+    padding: 40px;
+    width: 20%;
+    box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    animation: slide-up 1s;
+  }
 }
 
 @keyframes slide-up {
@@ -39,6 +51,7 @@ form {
 
 .form-control {
   width: 100%;
+  padding-bottom: 10px;
 }
 
 label {
@@ -86,18 +99,17 @@ p {
   }
 }
 
-.errors {
+.error {
   display: flex;
 
   justify-content: flex-start;
-}
-.error {
-  display: block;
+
   text-align: center;
-  font-size: 8px;
+  font-size: 10px;
   font-family: sans-serif;
   animation: fade-in 1s;
   color: red;
+  padding-top: 5px;
 }
 .password-row {
   display: flex;
@@ -109,4 +121,19 @@ p {
 .signIn-routing-button {
   display: flex;
   justify-content: flex-end;
+}
+.icon-container {
+  padding-right: 5px;
+}
+.password-input {
+  border: none;
+}
+.password-row {
+  border-radius: 5px;
+  border: #e5e5e5;
+  border-width: 2px;
+  border-style: solid;
+}
+label {
+  width: 100%;
 }

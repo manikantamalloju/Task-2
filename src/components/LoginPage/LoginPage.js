@@ -2,32 +2,10 @@ import React, { useState } from "react";
 import { useFormik } from "formik";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import "./Login.css";
-import axios from "axios";
+import * as Yup from "yup";
 import { Link } from "react-router-dom";
 
-export const url = {
-  API: "http://192.168.0.2:5000/",
-  domain: "http://localhost:3002/",
-};
-//Formik Error Validation
-const validate = (values) => {
-  const errors = {};
-
-  if (!values.userName) {
-    errors.userName = "Enter UserName";
-  }
-
-  if (!values.password) {
-    errors.password = "Enter Password";
-  } else if (!/(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/.test(values.password)) {
-    errors.password =
-      "Password should have at least 8 characters, one uppercase letter, one lowercase letter, and one number";
-  }
-
-  return errors;
-};
-
-const LoginPageMain = () => {
+const LoginPage = () => {
   const [showPassword, setshowPassword] = useState(false);
   const togglePasswordVisibility = () => {
     setshowPassword(!showPassword);
@@ -39,22 +17,37 @@ const LoginPageMain = () => {
       password: "",
     },
 
-    validate,
+    validationSchema: Yup.object({
+      userName: Yup.string()
+        .min(3, "Username should be at least 3 characters long.")
+        .matches(
+          "((?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{6,}))|((?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9])(?=.{4,}))",
+          "needed one (upperCase,lowercase,symbol)"
+        )
+        .required("Required*"),
+      password: Yup.string()
+        .min(8, "password should be at least 8 characters long.")
+        .matches(
+          "((?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{6,}))|((?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9])(?=.{8,}))",
+          "needed one (upperCase,lowercase,symbol)"
+        )
+        .required("Required*"),
+      firstName: Yup.string()
+        .min(3, "Fullname Should be at least 5 charactes")
+        .required("Required*"),
+      lastName: Yup.string()
+        .min(3, "Fullname Should be at least 5 charactes")
+        .required("Required*"),
+      email: Yup.string()
+        .email("invalid email id")
+        .matches(
+          "^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$",
+          "Invalid Email"
+        )
+        .required("Required*"),
+    }),
     onSubmit: (values) => {
-      //console.log(values);
-      axios
-        .post("/login/", values)
-        .then((response) => {
-          console.log(response.data);
-          if (response.statusText === "OK") {
-            // Redirect to dashboard on successful login
-            history.push("/dashboard");
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-          // Set error message to display to the user
-        });
+      console.log(values);
     },
   });
   //console.log(formik.values);
@@ -68,22 +61,21 @@ const LoginPageMain = () => {
             <input
               type="text"
               id="userName"
-              onChange={formik.handleChange}
-              value={formik.values.userName}
+              {...formik.getFieldProps("userName")}
               placeholder="Enter userName"
             />
-            <div className="errors">
-              <p className="error">{formik.errors.userName}</p>
-            </div>
+            {formik.touched.userName && formik.errors.userName ? (
+              <div className="error">{formik.errors.userName}</div>
+            ) : null}
           </div>
           <div className="form-control">
             <label htmlFor="password">Password</label>
             <div className="password-row">
               <input
+                className="password-input"
                 type={showPassword ? "text" : "password"}
                 id="password"
-                value={formik.values.password}
-                onChange={formik.handleChange}
+                {...formik.getFieldProps("password")}
                 placeholder="Enter password"
               />
               <div
@@ -94,16 +86,16 @@ const LoginPageMain = () => {
               </div>
             </div>
 
-            <div className="errors">
-              <p className="error">{formik.errors.password}</p>
-            </div>
+            {formik.touched.password && formik.errors.password ? (
+              <div className="error">{formik.errors.password}</div>
+            ) : null}
           </div>
           <button type="submit">Login</button>
         </form>
         {/* {formik.values && <p>Login successful!</p>} */}
         <Link to="/signUp">
           <div className="signIn-routing-button">
-            <p>signIn</p>
+            <p>signUp</p>
           </div>
         </Link>
       </div>
@@ -111,4 +103,4 @@ const LoginPageMain = () => {
   );
 };
 
-export default LoginPageMain;
+export default LoginPage;
